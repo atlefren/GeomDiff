@@ -21,7 +21,7 @@ namespace GeomDiff.Diff
             => geoms.Cast<TGeometry>().ToList();
 
         protected static List<Point> GetPoints(IGeometry geom)
-            => geom.Coordinates.Select(c => new Point(c.X, c.Y)).ToList();
+            => geom.Coordinates.Select(c => new Point(c)).ToList();
 
         protected static Coordinate[] ToCoordinates(List<IGeometry> points)
             => points.Select(p => p.Coordinate).ToArray();

@@ -16,7 +16,7 @@ namespace GeomDiff.Differ
     public class Differ
     {
 
-        private readonly Dictionary<string, IDiffer> differs = new Dictionary<string, IDiffer>()
+        private readonly Dictionary<string, IDiffer> _differs = new Dictionary<string, IDiffer>()
         {
             {"Point",  new PointDiffer()},
             {"LineString", new LineStringDiffer() },
@@ -61,7 +61,7 @@ namespace GeomDiff.Differ
 
             var geomType = GetGeomType(oldGeom, newGeom);
 
-            differs.TryGetValue(geomType, out var differ);
+            _differs.TryGetValue(geomType, out var differ);
             if (differ == null)
             {
                 throw new GeometryTypeException($"Geometry type not supported: {geomType}");

@@ -409,7 +409,7 @@ namespace Test
                 var newGeom = geomPair.NewGeometry;
                 var diff = GeometryDifferBinary.Diff(oldGeom, newGeom);
 
-                var patched = GeometryDifferBinary.Patch(oldGeom, diff); ;
+                var patched = GeometryDifferBinary.Patch(oldGeom, diff); 
                 Assert.AreEqual(WriteWkt(newGeom, 3), WriteWkt(patched, 3), $"Patch {geomPair.Name}");
 
                 var unpatched = GeometryDifferBinary.UnPatch(newGeom, diff);

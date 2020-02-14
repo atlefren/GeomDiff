@@ -228,5 +228,19 @@ namespace Test
             var p2 = ReadWkt<LineString>("LINESTRING(1 1, 2 2, 3 3)");
             Assert.AreEqual(WriteWkt(p2), WriteWkt(n));
         }
+
+
+        [Test]
+        public void TestLineStringChangeZOnly()
+        {
+            var g1 = ReadWkt("LINESTRING(0 0 0, 2 2 1, 3 3, 4 4)");
+            var g2 = ReadWkt("LINESTRING(0 0 1, 2 2 2, 3 3, 4 4)");
+
+            var diff = (LineStringDiff) Differ.CreateDiff(g1, g2);
+
+            Assert.AreEqual(Operation.Modify, diff.Operation);
+            Assert.AreEqual(2, diff.Value.Count);
+        }
+
     }
 }

@@ -71,6 +71,11 @@ namespace GeomDiff.Diff
 
         protected List<IGeometry> PatchList(List<IGeometry> existingElements, List<IDiff> diffs)
         {
+            if (diffs.Count == 0)
+            {
+                return existingElements;
+            }
+            
             var newElements = new List<IGeometry>();
 
             var max = Math.Max(existingElements.Count - 1, diffs.Max(v => v.Index));

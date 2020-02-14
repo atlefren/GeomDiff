@@ -10,7 +10,7 @@ namespace GeomDiff.Differ
 {
     public abstract class SequenceDiffer
     {
-        private readonly MyersDiff<IGeometry> differ = new MyersDiff<IGeometry>(AreEqual, GetDistance);
+        private readonly MyersDiff<IGeometry> _differ = new MyersDiff<IGeometry>(AreEqual, GetDistance);
 
         protected abstract IDiffer ComponentDiffer { get; set; }
 
@@ -23,7 +23,12 @@ namespace GeomDiff.Differ
             => ((IGeometryCollection) geometry).Geometries.ToList();
 
         private static bool AreEqual(IGeometry g1, IGeometry g2)
-            => g1.EqualsExact(g2);
+        {
+            var c1 = g1.Coordinates.ToList();
+            var c2 = g2.Coordinates.ToList();
+
+            return c1.Count == c2.Count && c1.Zip(c2, (a, b) => new {A = a, B = b}).All(pair => pair.A.Equals3D(pair.B));
+        } 
         
         private static double GetDistance(IGeometry g1, IGeometry g2) 
             => g1.Distance(g2);
@@ -37,7 +42,7 @@ namespace GeomDiff.Differ
             switch (change.Operation)
             {
                 case Operation.Modify:
-                    return differ.GetChanges(
+                    return _differ.GetChanges(
                         ToComponents(change.PreviousValue),
                         ToComponents(change.NewValue));
                 case Operation.Delete:
