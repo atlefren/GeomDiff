@@ -15,7 +15,7 @@ namespace GeomDiff.Diff
             => ReverseListDiff<MultiLineStringDiff>(index);
 
         protected override IGeometry ApplyPatch(IGeometry geometry)
-            => new MultiLineString(CastArray<ILineString>(CollectionDiff.Patch(geometry, GetDiffs(), PatchList)));
+            => new MultiLineString(PatchMulti<ILineString>(geometry));
         
     }
 }

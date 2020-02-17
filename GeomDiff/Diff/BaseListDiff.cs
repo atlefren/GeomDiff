@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GeoAPI.Geometries;
 using GeomDiff.Models.Enums;
@@ -12,19 +13,10 @@ namespace GeomDiff.Diff
         public override bool HasZ()
             => Value.Any(v => v.HasZ());
 
-        protected List<IDiff> GetDiffs() 
-            => Value.Cast<IDiff>().ToList();
-
-        protected static TGeometry[] CastArray<TGeometry>(IEnumerable<IGeometry> geometries)
-            => geometries.Cast<TGeometry>().ToArray();
-
-        protected static List<TGeometry> CastList<TGeometry>(IEnumerable<IGeometry> geometries)
-            => geometries.Cast<TGeometry>().ToList();
-
         protected static List<Point> GetPoints(IGeometry geometry)
             => geometry.Coordinates.Select(c => new Point(c)).ToList();
 
-        protected static Coordinate[] ToCoordinates(List<IGeometry> points)
+        protected static Coordinate[] ToCoordinates(List<Point> points)
             => points.Select(p => p.Coordinate).ToArray();
 
         protected TObj ReverseListDiff<TObj>(int? index = null)
@@ -39,11 +31,56 @@ namespace GeomDiff.Diff
             {
                 var index = diff.Index + offset;
                 offset += GetOffsetChange(diff.Operation);
-                reversed.Add((TDiffedComponent)diff.Reverse(index));
+                reversed.Add((TDiffedComponent) diff.Reverse(index));
             }
 
             return reversed;
         }
+
+        protected List<TGeometry> PatchList<TGeometry>(List<TGeometry> geometries)
+            where TGeometry : IGeometry
+        {
+            var diffs = Value.Cast<IDiff>().ToList();
+            var existingElements = geometries.Cast<IGeometry>().ToList();
+            if (diffs.Count == 0)
+            {
+                return existingElements.Cast<TGeometry>().ToList();
+            }
+
+            var patched = new List<IGeometry>();
+
+            var numElements = Math.Max(existingElements.Count - 1, diffs.Max(v => v.Index));
+
+            for (var index = 0; index <= numElements; index++)
+            {
+                var inserts = Util.GetDiffs(index, Operation.Insert, diffs);
+                patched.AddRange(inserts.Select(insert => insert.Apply(null)));
+
+
+                var delete = Util.GetDiff(index, Operation.Delete, diffs);
+                if (delete != null)
+                {
+                    continue;
+                }
+                var element = Util.GetAt(index, existingElements);
+                if (element == null)
+                {
+                    continue;
+                }
+                var modify = Util.GetDiff(index, Operation.Modify, diffs);
+                patched.Add(modify != null ? modify.Apply(element) : element);
+            }
+
+            return patched.Cast<TGeometry>().ToList();
+        }
+
+        protected TOutput[] PatchMulti<TOutput>(IGeometry geometry)
+            where TOutput : IGeometry
+            => PatchList(
+                geometry == null
+                    ? new List<IGeometry>()
+                    : ((GeometryCollection) geometry).Geometries.ToList()
+               ).Cast<TOutput>().ToArray();
 
         private static int GetOffsetChange(Operation operation)
         {

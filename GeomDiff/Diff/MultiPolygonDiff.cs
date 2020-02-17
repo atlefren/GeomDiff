@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using GeoAPI.Geometries;
+﻿using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 
 namespace GeomDiff.Diff
@@ -12,6 +11,6 @@ namespace GeomDiff.Diff
             => ReverseListDiff<MultiPolygonDiff>(index);
 
         protected override IGeometry ApplyPatch(IGeometry geometry)
-            => new MultiPolygon(CastArray<IPolygon>(CollectionDiff.Patch(geometry, GetDiffs(), PatchList)));
+            => new MultiPolygon(PatchMulti<IPolygon>(geometry));
     }
 }

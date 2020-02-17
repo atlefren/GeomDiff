@@ -14,9 +14,8 @@ namespace GeomDiff.Diff
         protected override IGeometry ApplyPatch(IGeometry geometry)
         {
             var existingElements = geometry != null ? GetPoints(geometry) : new List<Point>();
-            var newElements = PatchList(CastList<IGeometry>(existingElements), GetDiffs());
 
-            return new LineString(ToCoordinates(newElements));
+            return new LineString(ToCoordinates(PatchList(existingElements)));
         }
     }
 }

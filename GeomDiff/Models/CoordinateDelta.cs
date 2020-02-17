@@ -9,8 +9,8 @@ namespace GeomDiff.Models
         public double? Y { get; set; }
         public double? Z { get; set; }
 
-        public Coordinate Patch(Coordinate coord)
-            => new Coordinate(coord.X + (X ?? 0), coord.Y + (Y ?? 0), coord.Z + (Z ?? 0));
+        public Coordinate Patch(Coordinate coordinate)
+            => new Coordinate(coordinate.X + (X ?? 0), coordinate.Y + (Y ?? 0), coordinate.Z + (Z ?? 0));
         
         public CoordinateDelta Reverse()
             => new CoordinateDelta()

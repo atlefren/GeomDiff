@@ -11,7 +11,7 @@ namespace GeomDiff.Diff
             => ReverseListDiff<MultiPointDiff>(index);
 
         protected override IGeometry ApplyPatch(IGeometry geometry)
-            => new MultiPoint(CastArray<IPoint>(CollectionDiff.Patch(geometry, GetDiffs(), PatchList)));
+            => new MultiPoint(PatchMulti<IPoint>(geometry));
         
     }
 }

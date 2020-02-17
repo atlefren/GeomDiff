@@ -15,9 +15,7 @@ namespace GeomDiff.Diff
         IGeometry Apply(IGeometry geometry);
         IGeometry Undo(IGeometry geometry);
         IDiff Reverse(int? index = null);
-
         bool HasZ();
-
     }
 
     public interface IDiffWithValue<TDiffedComponent> : IDiff
@@ -49,7 +47,6 @@ namespace GeomDiff.Diff
         public IGeometry Undo(IGeometry geometry)
             => Reverse().Apply(geometry);
         
-
         public void CheckGeomType(IGeometry geometry)
         {
             if (geometry != null && geometry.GeometryType != GeometryType)
@@ -68,41 +65,6 @@ namespace GeomDiff.Diff
             };
 
         protected abstract IGeometry ApplyPatch(IGeometry geometry);
-
-        protected List<IGeometry> PatchList(List<IGeometry> existingElements, List<IDiff> diffs)
-        {
-            if (diffs.Count == 0)
-            {
-                return existingElements;
-            }
-            
-            var newElements = new List<IGeometry>();
-
-            var numElements = Math.Max(existingElements.Count - 1, diffs.Max(v => v.Index));
-
-            for (var index = 0; index <= numElements; index++)
-            {
-                var inserts = Util.GetDiffs(index, Operation.Insert, diffs);
-                newElements.AddRange(inserts.Select(insert => insert.Apply(null)));
-
-
-                var delete = Util.GetDiff(index, Operation.Delete, diffs);
-                if (delete != null)
-                {
-                    continue;
-                }
-                var element = Util.GetAt(index, existingElements);
-                if (element == null)
-                {
-                    continue;
-                }
-                var modify = Util.GetDiff(index, Operation.Modify, diffs);
-                newElements.Add(modify != null ? modify.Apply(element) : element);
-            }
-
-            return newElements;
-
-        }
 
         protected Operation FlipOperation()
         {

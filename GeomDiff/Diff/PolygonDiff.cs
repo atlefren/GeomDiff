@@ -9,10 +9,10 @@ namespace GeomDiff.Diff
     {
         public override string GeometryType { get; } = "Polygon";
 
-        private static IEnumerable<LinearRing> GetRings(Polygon polygon)
+        private static List<ILinearRing> GetRings(Polygon polygon)
             => polygon == null 
-                ? new List<LinearRing>() 
-                : new List<LinearRing>() { (LinearRing) polygon.Shell}.Concat(CastList<LinearRing>(polygon.Holes));
+                ? new List<ILinearRing>() 
+                : new List<ILinearRing>() {polygon.Shell}.Concat(polygon.Holes).ToList();
         
 
         public override IDiff Reverse(int? index = null)
@@ -20,14 +20,9 @@ namespace GeomDiff.Diff
 
         protected override IGeometry ApplyPatch(IGeometry geometry)
         {
-            var existingElements = CastList<IGeometry>(GetRings((Polygon) geometry));
+            var patched = PatchList(GetRings((Polygon) geometry));
 
-            var newElements = PatchList(existingElements, GetDiffs());
-
-            var shell = (LinearRing) newElements[0];
-            var holes = CastArray<ILinearRing>(newElements.Skip(1));
-
-            return new Polygon(shell, holes);
+            return new Polygon(patched[0], patched.Skip(1).ToArray());
         }
     }
 }
