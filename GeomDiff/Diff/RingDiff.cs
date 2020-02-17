@@ -12,9 +12,9 @@ namespace GeomDiff.Diff
         public override IDiff Reverse(int? index = null) 
             => ReverseListDiff<RingDiff>(index);
 
-        protected override IGeometry ApplyPatch(IGeometry geom)
+        protected override IGeometry ApplyPatch(IGeometry geometry)
         {
-            var existingElements = geom != null ? GetPoints(geom) : new List<Point>();
+            var existingElements = geometry != null ? GetPoints(geometry) : new List<Point>();
             var newElements = PatchList(CastList<IGeometry>(existingElements), GetDiffs());
             return new LinearRing(ToCoordinates(newElements));
         }

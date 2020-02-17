@@ -3,11 +3,10 @@ using GeoAPI.Geometries;
 using GeomDiff.Diff;
 using GeomDiff.Models;
 using GeomDiff.Models.Enums;
-using GeomDiff.Models.Excepions;
+using GeomDiff.Models.Exceptions;
 
 namespace GeomDiff.Differ
 {
-
     public interface IDiffer
     {
         IDiff CreateDiff(Change change);
@@ -15,7 +14,6 @@ namespace GeomDiff.Differ
 
     public class Differ
     {
-
         private readonly Dictionary<string, IDiffer> _differs = new Dictionary<string, IDiffer>()
         {
             {"Point",  new PointDiffer()},
@@ -33,63 +31,55 @@ namespace GeomDiff.Differ
                 return Operation.Modify;
             }
 
-            if (oldGeometry == null)
-            {
-                return Operation.Insert;
-            }
-            // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (newGeometry == null)
-            {
-                return Operation.Delete;
-            }
-
-            return Operation.Noop;
+            return oldGeometry == null 
+                ? Operation.Insert 
+                : Operation.Delete;
         }
 
 
-        public IDiff CreateDiff(IGeometry oldGeom, IGeometry newGeom)
+        public IDiff CreateDiff(IGeometry oldGeometry, IGeometry newGeometry)
         {
-            if (oldGeom == null && newGeom == null)
+            if (oldGeometry == null && newGeometry == null)
             {
                 return null;
             }
 
-            if (!GeometriesEqual(oldGeom, newGeom))
+            if (!GeometriesEqual(oldGeometry, newGeometry))
             {
-                throw new GeometryTypeException(oldGeom.GeometryType, newGeom.GeometryType);
+                throw new GeometryTypeException(oldGeometry.GeometryType, newGeometry.GeometryType);
             }
 
-            var geomType = GetGeomType(oldGeom, newGeom);
+            var geometryType = GetGeomType(oldGeometry, newGeometry);
 
-            _differs.TryGetValue(geomType, out var differ);
+            _differs.TryGetValue(geometryType, out var differ);
             if (differ == null)
             {
-                throw new GeometryTypeException($"Geometry type not supported: {geomType}");
+                throw new GeometryTypeException($"Geometry type not supported: {geometryType}");
             }
 
             return differ.CreateDiff(new Change()
             {
                 Index = 0,
-                Operation = GetOperation(oldGeom, newGeom),
-                PreviousValue = oldGeom,
-                NewValue = newGeom
+                Operation = GetOperation(oldGeometry, newGeometry),
+                PreviousValue = oldGeometry,
+                NewValue = newGeometry
             });
 
         }
 
-        private static bool GeometriesEqual(IGeometry geom1, IGeometry geom2)
-            => geom1 == null || geom2 == null || geom1.GeometryType == geom2.GeometryType;
+        private static bool GeometriesEqual(IGeometry geometry1, IGeometry geometry2)
+            => geometry1 == null || geometry2 == null || geometry1.GeometryType == geometry2.GeometryType;
 
 
-        private static string GetGeomType(IGeometry oldGeom, IGeometry newGeom)
+        private static string GetGeomType(IGeometry oldGeometry, IGeometry newGeometry)
         {
-            if (oldGeom != null)
+            if (oldGeometry != null)
             {
-                return oldGeom.GeometryType;
+                return oldGeometry.GeometryType;
             }
-            if (newGeom != null)
+            if (newGeometry != null)
             {
-                return newGeom.GeometryType;
+                return newGeometry.GeometryType;
             }
             return "none";
         }

@@ -14,8 +14,8 @@ namespace GeomDiff.Diff
         public override IDiff Reverse(int? index = null) 
             => ReverseListDiff<MultiLineStringDiff>(index);
 
-        protected override IGeometry ApplyPatch(IGeometry geom)
-            => new MultiLineString(CastArray<ILineString>(CollectionDiff.Patch(geom, GetDiffs(), PatchList)));
+        protected override IGeometry ApplyPatch(IGeometry geometry)
+            => new MultiLineString(CastArray<ILineString>(CollectionDiff.Patch(geometry, GetDiffs(), PatchList)));
         
     }
 }

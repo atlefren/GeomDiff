@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GeoAPI.Geometries;
 using GeomDiff.Models.Enums;
-using GeomDiff.Models.Excepions;
+using GeomDiff.Models.Exceptions;
 
 namespace GeomDiff.Diff
 {
@@ -12,8 +12,8 @@ namespace GeomDiff.Diff
         int Index { get; set; }
         Operation Operation { get; set; }
         string GeometryType { get; }
-        IGeometry Apply(IGeometry geom);
-        IGeometry Undo(IGeometry geom);
+        IGeometry Apply(IGeometry geometry);
+        IGeometry Undo(IGeometry geometry);
         IDiff Reverse(int? index = null);
 
         bool HasZ();
@@ -36,18 +36,18 @@ namespace GeomDiff.Diff
 
         public abstract bool HasZ();
 
-        public IGeometry Apply(IGeometry geom)
+        public IGeometry Apply(IGeometry geometry)
         {
             if (Operation == Operation.Delete)
             {
                 return null;
             }
-            CheckGeomType(geom);
-            return ApplyPatch(geom);
+            CheckGeomType(geometry);
+            return ApplyPatch(geometry);
         }
 
-        public IGeometry Undo(IGeometry geom)
-            => Reverse().Apply(geom);
+        public IGeometry Undo(IGeometry geometry)
+            => Reverse().Apply(geometry);
         
 
         public void CheckGeomType(IGeometry geometry)
@@ -67,7 +67,7 @@ namespace GeomDiff.Diff
                 Value = value
             };
 
-        protected abstract IGeometry ApplyPatch(IGeometry geom);
+        protected abstract IGeometry ApplyPatch(IGeometry geometry);
 
         protected List<IGeometry> PatchList(List<IGeometry> existingElements, List<IDiff> diffs)
         {
@@ -78,9 +78,9 @@ namespace GeomDiff.Diff
             
             var newElements = new List<IGeometry>();
 
-            var max = Math.Max(existingElements.Count - 1, diffs.Max(v => v.Index));
+            var numElements = Math.Max(existingElements.Count - 1, diffs.Max(v => v.Index));
 
-            for (var index = 0; index <= max; index++)
+            for (var index = 0; index <= numElements; index++)
             {
                 var inserts = Util.GetDiffs(index, Operation.Insert, diffs);
                 newElements.AddRange(inserts.Select(insert => insert.Apply(null)));
@@ -97,7 +97,6 @@ namespace GeomDiff.Diff
                     continue;
                 }
                 var modify = Util.GetDiff(index, Operation.Modify, diffs);
-
                 newElements.Add(modify != null ? modify.Apply(element) : element);
             }
 
@@ -117,11 +116,6 @@ namespace GeomDiff.Diff
                 default:
                     return Operation;
             }
-        }
-
-        public override string ToString()
-        {
-            return $"{Index}: {Operation.ToString()} = {Value.ToString()}";
         }
 
     }

@@ -17,6 +17,39 @@ namespace GeomDiff
         public static TElement GetAt<TElement>(int index, IReadOnlyList<TElement> list)
             where TElement : IGeometry
             => index < list.Count ? list[index] : default;
+
+        public static GeometryType GetGeometryType(string geometryType)
+        {
+            switch (geometryType)
+            {
+                case "Point":
+                {
+                    return GeometryType.Point;
+                }
+                case "LineString":
+                {
+                    return GeometryType.LineString;
+                }
+                case "Polygon":
+                {
+                    return GeometryType.Polygon;
+                }
+                case "MultiPoint":
+                {
+                    return GeometryType.MultiPoint;
+                }
+                case "MultiLineString":
+                {
+                    return GeometryType.MultiLineString;
+                }
+                case "MultiPolygon":
+                {
+                    return GeometryType.MultiPolygon;
+                }
+                default:
+                    return GeometryType.Unknown;
+            }
+        }
     }
 
 }

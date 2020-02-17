@@ -1,4 +1,4 @@
-﻿using GeomDiff.Models.Excepions;
+﻿using GeomDiff.Models.Exceptions;
 using NUnit.Framework;
 
 namespace Test

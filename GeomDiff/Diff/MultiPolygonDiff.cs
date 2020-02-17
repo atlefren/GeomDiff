@@ -11,7 +11,7 @@ namespace GeomDiff.Diff
         public override IDiff Reverse(int? index = null) 
             => ReverseListDiff<MultiPolygonDiff>(index);
 
-        protected override IGeometry ApplyPatch(IGeometry geom)
-            => new MultiPolygon(CastArray<IPolygon>(CollectionDiff.Patch(geom, GetDiffs(), PatchList)));
+        protected override IGeometry ApplyPatch(IGeometry geometry)
+            => new MultiPolygon(CastArray<IPolygon>(CollectionDiff.Patch(geometry, GetDiffs(), PatchList)));
     }
 }

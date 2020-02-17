@@ -6,7 +6,7 @@ using GeoAPI.Geometries;
 using GeomDiff.Diff;
 using GeomDiff.Models;
 using GeomDiff.Models.Enums;
-using GeomDiff.Models.Excepions;
+using GeomDiff.Models.Exceptions;
 
 namespace GeomDiff.Implementation
 {
@@ -26,16 +26,14 @@ namespace GeomDiff.Implementation
 
         private static void WriteHeader(IDiff diff, BinaryWriter writer)
         {
-            WriteUint((int) GetGeometryType(diff.GeometryType), writer);
+            WriteUint((int) Util.GetGeometryType(diff.GeometryType), writer);
             writer.Write(diff.HasZ());
         }
-
 
         private static void Write(IDiff diff, BinaryWriter writer, bool hasZ)
         {
             WriteUint((int) diff.Operation, writer);
 
-         
             switch (diff)
             {
                 case PointDiff pointDiff:
@@ -105,43 +103,10 @@ namespace GeomDiff.Implementation
             }
         }
 
-
-        private static void WriteUint(int num, BinaryWriter writer)
-            => writer.Write(num);
+        private static void WriteUint(int number, BinaryWriter writer)
+            => writer.Write(number);
         
-
-        private static GeometryType GetGeometryType(string geometryType)
-        {
-            switch (geometryType)
-            {
-                case "Point":
-                {
-                    return GeometryType.Point;
-                }
-                case "LineString":
-                {
-                    return GeometryType.LineString;
-                }
-                case "Polygon":
-                {
-                    return GeometryType.Polygon;
-                }
-                case "MultiPoint":
-                {
-                    return GeometryType.MultiPoint;
-                }
-                case "MultiLineString":
-                {
-                    return GeometryType.MultiLineString;
-                }
-                case "MultiPolygon":
-                {
-                    return GeometryType.MultiPolygon;
-                }
-                default:
-                    return GeometryType.Unknown;
-            }
-        }
+        
 
     }
 }

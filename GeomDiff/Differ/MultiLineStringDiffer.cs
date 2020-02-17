@@ -17,7 +17,6 @@ namespace GeomDiff.Differ
                 Value = GetValue<LineStringDiff>(change)
             };
 
-        
         protected override List<IGeometry> ToComponents(IGeometry geometry)
             => GetGeometries(geometry);
     }

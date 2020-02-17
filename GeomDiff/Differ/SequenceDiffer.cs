@@ -22,19 +22,19 @@ namespace GeomDiff.Differ
         protected List<IGeometry> GetGeometries(IGeometry geometry)
             => ((IGeometryCollection) geometry).Geometries.ToList();
 
-        private static bool AreEqual(IGeometry g1, IGeometry g2)
+        private static bool AreEqual(IGeometry geometry1, IGeometry geometry2)
         {
-            var c1 = g1.Coordinates.ToList();
-            var c2 = g2.Coordinates.ToList();
+            var c1 = geometry1.Coordinates.ToList();
+            var c2 = geometry2.Coordinates.ToList();
 
             return c1.Count == c2.Count && c1.Zip(c2, (a, b) => new {A = a, B = b}).All(pair => pair.A.Equals3D(pair.B));
         } 
         
-        private static double GetDistance(IGeometry g1, IGeometry g2) 
-            => g1.Distance(g2);
+        private static double GetDistance(IGeometry geometry1, IGeometry geometry2) 
+            => geometry1.Distance(geometry2);
 
         private IEnumerable<IDiff> ToDiffs(IEnumerable<Change> changes)
-            => changes.Select(c => ComponentDiffer.CreateDiff(c));
+            => changes.Select(change => ComponentDiffer.CreateDiff(change));
 
         private IEnumerable<Change> GetChanges(Change change)
         {

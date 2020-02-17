@@ -4,7 +4,7 @@ using System.IO;
 using GeomDiff.Diff;
 using GeomDiff.Models;
 using GeomDiff.Models.Enums;
-using GeomDiff.Models.Excepions;
+using GeomDiff.Models.Exceptions;
 
 
 namespace GeomDiff.Implementation

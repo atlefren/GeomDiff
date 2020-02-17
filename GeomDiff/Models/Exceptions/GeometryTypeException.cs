@@ -1,7 +1,6 @@
 ﻿using System;
 
-
-namespace GeomDiff.Models.Excepions
+namespace GeomDiff.Models.Exceptions
 {
     public class GeometryTypeException : ArgumentException
     {

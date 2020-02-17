@@ -16,7 +16,6 @@ namespace GeomDiff.Differ
         private static IEnumerable<ILinearRing> GetRings(IPolygon polygon)
             =>  new List<ILinearRing>() { polygon.Shell }.Concat(polygon.Holes.ToList());
         
-
         public IDiff CreateDiff(Change change) => 
             new PolygonDiff() {
                 Operation = change.Operation,

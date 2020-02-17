@@ -11,11 +11,10 @@ namespace GeomDiff.Diff
         public override IDiff Reverse(int? index = null)
             => ReverseListDiff<LineStringDiff>(index);
 
-        protected override IGeometry ApplyPatch(IGeometry geom)
+        protected override IGeometry ApplyPatch(IGeometry geometry)
         {
-            var existingElements = geom != null ? GetPoints(geom) : new List<Point>();
-            var diffs = GetDiffs();
-            var newElements = PatchList(CastList<IGeometry>(existingElements), diffs);
+            var existingElements = geometry != null ? GetPoints(geometry) : new List<Point>();
+            var newElements = PatchList(CastList<IGeometry>(existingElements), GetDiffs());
 
             return new LineString(ToCoordinates(newElements));
         }

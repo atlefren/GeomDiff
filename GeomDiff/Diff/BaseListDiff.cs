@@ -12,16 +12,17 @@ namespace GeomDiff.Diff
         public override bool HasZ()
             => Value.Any(v => v.HasZ());
 
-        protected List<IDiff> GetDiffs() => Value.Cast<IDiff>().ToList();
+        protected List<IDiff> GetDiffs() 
+            => Value.Cast<IDiff>().ToList();
 
-        protected static TGeometry[] CastArray<TGeometry>(IEnumerable<IGeometry> geoms)
-            => geoms.Cast<TGeometry>().ToArray();
+        protected static TGeometry[] CastArray<TGeometry>(IEnumerable<IGeometry> geometries)
+            => geometries.Cast<TGeometry>().ToArray();
 
-        protected static List<TGeometry> CastList<TGeometry>(IEnumerable<IGeometry> geoms)
-            => geoms.Cast<TGeometry>().ToList();
+        protected static List<TGeometry> CastList<TGeometry>(IEnumerable<IGeometry> geometries)
+            => geometries.Cast<TGeometry>().ToList();
 
-        protected static List<Point> GetPoints(IGeometry geom)
-            => geom.Coordinates.Select(c => new Point(c)).ToList();
+        protected static List<Point> GetPoints(IGeometry geometry)
+            => geometry.Coordinates.Select(c => new Point(c)).ToList();
 
         protected static Coordinate[] ToCoordinates(List<IGeometry> points)
             => points.Select(p => p.Coordinate).ToArray();
@@ -29,8 +30,7 @@ namespace GeomDiff.Diff
         protected TObj ReverseListDiff<TObj>(int? index = null)
             where TObj : IDiffWithValue<List<TDiffedComponent>>, new()
             => Copy<TObj>(ReverseDiffs(), index);
-                
-
+        
         protected List<TDiffedComponent> ReverseDiffs()
         {
             var offset = 0;

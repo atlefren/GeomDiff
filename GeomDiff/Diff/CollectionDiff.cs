@@ -8,15 +8,12 @@ namespace GeomDiff.Diff
 {
     public static class CollectionDiff
     {
-        public static IGeometry[] Patch(IGeometry geom, List<IDiff> diffs, Func<List<IGeometry>, List<IDiff>, List<IGeometry>> patchList)
-        {
-            if (geom == null)
-            {
-                return patchList(new List<IGeometry>(), diffs).ToArray();
-            }
-
-            var existingElements = ((GeometryCollection) geom).Geometries.ToList();
-            return patchList(existingElements, diffs).ToArray();
-        }
+        public static IGeometry[] Patch(IGeometry geometry, List<IDiff> diffs,
+            Func<List<IGeometry>, List<IDiff>, List<IGeometry>> patchList)
+            => patchList(
+                geometry == null
+                    ? new List<IGeometry>()
+                    : ((GeometryCollection) geometry).Geometries.ToList(),
+                diffs).ToArray();
     }
 }

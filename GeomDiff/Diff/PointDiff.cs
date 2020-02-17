@@ -15,10 +15,9 @@ namespace GeomDiff.Diff
         public override bool HasZ()
             => Value.Z.HasValue && !double.IsNaN(Value.Z.Value);
 
-        protected override IGeometry ApplyPatch(IGeometry geom)
-            => new Point(Value.Patch(geom == null ? GetEmptyCoordinate() : geom.Coordinate));
+        protected override IGeometry ApplyPatch(IGeometry geometry)
+            => new Point(Value.Patch(geometry == null ? GetEmptyCoordinate() : geometry.Coordinate));
         
-
         private static Coordinate GetEmptyCoordinate()
             => new Coordinate(0, 0,  0);
 

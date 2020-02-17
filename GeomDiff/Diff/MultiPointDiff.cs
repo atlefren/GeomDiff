@@ -10,8 +10,8 @@ namespace GeomDiff.Diff
         public override IDiff Reverse(int? index = null)
             => ReverseListDiff<MultiPointDiff>(index);
 
-        protected override IGeometry ApplyPatch(IGeometry geom)
-            => new MultiPoint(CastArray<IPoint>(CollectionDiff.Patch(geom, GetDiffs(), PatchList)));
+        protected override IGeometry ApplyPatch(IGeometry geometry)
+            => new MultiPoint(CastArray<IPoint>(CollectionDiff.Patch(geometry, GetDiffs(), PatchList)));
         
     }
 }
